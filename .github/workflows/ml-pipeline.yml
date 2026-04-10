@@ -57,6 +57,11 @@ jobs:
         tar -xzf downloads/evaluations.tar.gz
         tar -xzf downloads/reference_data.tar.gz
 
-        echo "=== Checking structure ==="
-        ls -R data | head -n 50
-        ls -R outputs | head -n 50
+    - name: Check folder structure
+      working-directory: laura-baird-icse2026
+      run: |
+        echo "=== data/ ==="
+        ls -1 data/
+
+        echo "=== outputs/ ==="
+        ls -1 outputs/
