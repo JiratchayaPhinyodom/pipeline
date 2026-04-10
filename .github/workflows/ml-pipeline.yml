@@ -35,3 +35,28 @@ jobs:
       working-directory: laura-baird-icse2026
       run: |
         uv sync
+
+    - name: Download dataset
+      working-directory: laura-baird-icse2026
+      run: |
+        mkdir -p downloads
+
+        wget https://dataverse.harvard.edu/api/access/datafile/13300781 -O downloads/sboms.tar.gz
+        wget https://dataverse.harvard.edu/api/access/datafile/13300778 -O downloads/scans.tar.gz
+        wget https://dataverse.harvard.edu/api/access/datafile/13300782 -O downloads/models.tar.gz
+        wget https://dataverse.harvard.edu/api/access/datafile/13300784 -O downloads/evaluations.tar.gz
+        wget https://dataverse.harvard.edu/api/access/datafile/13300780 -O downloads/reference_data.tar.gz
+
+    - name: Extract dataset
+      working-directory: laura-baird-icse2026
+      run: |
+        # Extract everything into repo root
+        tar -xzf downloads/sboms.tar.gz
+        tar -xzf downloads/scans.tar.gz
+        tar -xzf downloads/models.tar.gz
+        tar -xzf downloads/evaluations.tar.gz
+        tar -xzf downloads/reference_data.tar.gz
+
+        echo "=== Checking structure ==="
+        ls -R data | head -n 50
+        ls -R outputs | head -n 50
