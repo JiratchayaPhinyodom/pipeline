@@ -65,3 +65,8 @@ jobs:
 
         echo "=== outputs/ ==="
         ls -1 outputs/
+
+    - name: Check HGAT model
+      working-directory: laura-baird-icse2026
+      run: |
+        ls outputs/models/
