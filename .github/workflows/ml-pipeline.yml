@@ -75,7 +75,7 @@ jobs:
       working-directory: laura-baird-icse2026
       run: |
         uv run python -m sbom_toolkit.ml.train_hgat \
-            --scan-dir outputs/scans \
+            --scan-dir data/scanned_sboms \
             --epochs 30 \
             --hidden-dim 64 \
             --heads 2
