@@ -70,6 +70,18 @@ jobs:
       working-directory: laura-baird-icse2026
       run: |
         ls outputs/models/
+    
+    - name: Fix missing .json extensions
+      working-directory: laura-baird-icse2026
+      run: |
+        echo "Fixing file extensions..."
+
+        find data/scanned_sboms -type f ! -name "*.json" | while read file; do
+          mv "$file" "$file.json"
+        done
+
+        echo "Done. Sample files:"
+        ls data/scanned_sboms | head
 
     - name: Train HGAT on enriched SBOM data
       working-directory: laura-baird-icse2026
