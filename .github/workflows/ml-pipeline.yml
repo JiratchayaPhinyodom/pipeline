@@ -71,7 +71,16 @@ jobs:
       run: |
         ls outputs/models/
 
-    - name: Run HGAT prediction
+    - name: Train HGAT on enriched SBOM data
+      working-directory: laura-baird-icse2026
+      run: |
+        uv run python -m sbom_toolkit.ml.train_hgat \
+            --scan-dir outputs/scans \
+            --epochs 30 \
+            --hidden-dim 64 \
+            --heads 2
+
+    - name: Evaluate on labeled SBOMs
       working-directory: laura-baird-icse2026
       run: |
         uv run python -m sbom_toolkit.ml.hgat_predict \
