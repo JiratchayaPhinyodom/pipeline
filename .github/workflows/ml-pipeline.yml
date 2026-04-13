@@ -77,3 +77,29 @@ jobs:
         uv run python -m sbom_toolkit.ml.hgat_predict \
           outputs/scans \
           --model outputs/models/hgat_best.pt
+
+    - name: Train Cascade Predictor (MLP)
+      working-directory: laura-baird-icse2026
+      run: |
+        uv run python -m sbom_toolkit.ml.train_cascade_predictor \
+          --external-chains data/external_chains \
+          --incidents supply-chain-seeds/incidents.json \
+          --epochs 10
+
+    - name: Show output summary
+      working-directory: laura-baird-icse2026
+      run: |
+        echo "=== Outputs folder ==="
+        ls -R outputs | head -n 100
+
+        echo "=== Models ==="
+        ls outputs/models/
+
+        echo "=== Evaluations ==="
+        ls outputs/evaluations/ || echo "No evaluations yet"
+
+    - name: Upload outputs
+      uses: actions/upload-artifact@v4
+      with:
+        name: sbom-ml-outputs
+        path: laura-baird-icse2026/outputs/
