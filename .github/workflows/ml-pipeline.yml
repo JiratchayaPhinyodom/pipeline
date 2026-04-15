@@ -108,7 +108,7 @@ jobs:
         uv run python -m sbom_toolkit.ml.train_cascade_predictor \
           --external-chains data/external_chains \
           --incidents supply-chain-seeds/incidents.json \
-          --epochs 10
+          --epochs 50
 
     - name: Show output summary
       working-directory: laura-baird-icse2026
