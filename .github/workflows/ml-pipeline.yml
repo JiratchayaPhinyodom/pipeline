@@ -35,12 +35,11 @@ jobs:
       working-directory: laura-baird-icse2026
       run: |
         uv sync
-
+    - name: Check out repository to the runner
+      uses: actions/checkout@v4
 
     - name: FULL DEBUG
       run: |
-        cd ..
-        cd ..
         echo "=== CURRENT DIR ==="
         pwd
 
