@@ -39,6 +39,7 @@ jobs:
 
     - name: FULL DEBUG
       run: |
+        cd ..
         echo "=== CURRENT DIR ==="
         pwd
 
