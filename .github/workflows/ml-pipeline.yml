@@ -128,11 +128,24 @@ jobs:
         name: sbom-ml-outputs
         path: laura-baird-icse2026/outputs/
 
-    - name: Rank attack chains
+    - name: Prepare ranking data
+      working-directory: pipeline
       run: |
-        uv run python scripts/rank_attack_chains.py
+        uv run python prepare_ranking_data.py
 
-    - name: Show ranked attack chains
+    - name: Train ranking model
+      working-directory: pipeline
       run: |
-        echo "=== Ranked Attack Chains ==="
-        cat laura-baird-icse2026/outputs/attack_chains_ranked.json | head -n 50
+        uv run python train_ranking_model.py
+
+    - name: Predict ranking
+      working-directory: pipeline
+      run: |
+        uv run python predict_ranking.py
+
+    - name: Upload outputs
+      uses: actions/upload-artifact@v4
+      with:
+        name: sbom-ml-outputs
+        path: |
+          laura-baird-icse2026/outputs/
