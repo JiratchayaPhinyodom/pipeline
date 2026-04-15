@@ -35,114 +35,129 @@ jobs:
       working-directory: laura-baird-icse2026
       run: |
         uv sync
-
-    - name: Download dataset
-      working-directory: laura-baird-icse2026
+    - name: Debug repository structure
       run: |
-        mkdir -p downloads
+        echo "=== Current directory ==="
+        pwd
 
-        wget https://dataverse.harvard.edu/api/access/datafile/13300781 -O downloads/sboms.tar.gz
-        wget https://dataverse.harvard.edu/api/access/datafile/13300778 -O downloads/scans.tar.gz
-        wget https://dataverse.harvard.edu/api/access/datafile/13300782 -O downloads/models.tar.gz
-        wget https://dataverse.harvard.edu/api/access/datafile/13300784 -O downloads/evaluations.tar.gz
-        wget https://dataverse.harvard.edu/api/access/datafile/13300780 -O downloads/reference_data.tar.gz
+        echo "=== Root files ==="
+        ls -la
 
-    - name: Extract dataset
-      working-directory: laura-baird-icse2026
-      run: |
-        # Extract everything into repo root
-        tar -xzf downloads/sboms.tar.gz
-        tar -xzf downloads/scans.tar.gz
-        tar -xzf downloads/models.tar.gz
-        tar -xzf downloads/evaluations.tar.gz
-        tar -xzf downloads/reference_data.tar.gz
+        echo "=== pipeline folder ==="
+        ls -la pipeline || echo "no pipeline folder"
 
-    - name: Check folder structure
-      working-directory: laura-baird-icse2026
-      run: |
-        echo "=== data/ ==="
-        ls -1 data/
+        echo "=== scripts folder ==="
+        ls -la scripts || echo "no scripts folder"
 
-        echo "=== outputs/ ==="
-        ls -1 outputs/
+        echo "=== pipeline/scripts folder ==="
+        ls -la pipeline/scripts || echo "no pipeline/scripts folder"
+    # - name: Download dataset
+    #   working-directory: laura-baird-icse2026
+    #   run: |
+    #     mkdir -p downloads
 
-    - name: Check HGAT model
-      working-directory: laura-baird-icse2026
-      run: |
-        ls outputs/models/
+    #     wget https://dataverse.harvard.edu/api/access/datafile/13300781 -O downloads/sboms.tar.gz
+    #     wget https://dataverse.harvard.edu/api/access/datafile/13300778 -O downloads/scans.tar.gz
+    #     wget https://dataverse.harvard.edu/api/access/datafile/13300782 -O downloads/models.tar.gz
+    #     wget https://dataverse.harvard.edu/api/access/datafile/13300784 -O downloads/evaluations.tar.gz
+    #     wget https://dataverse.harvard.edu/api/access/datafile/13300780 -O downloads/reference_data.tar.gz
+
+    # - name: Extract dataset
+    #   working-directory: laura-baird-icse2026
+    #   run: |
+    #     # Extract everything into repo root
+    #     tar -xzf downloads/sboms.tar.gz
+    #     tar -xzf downloads/scans.tar.gz
+    #     tar -xzf downloads/models.tar.gz
+    #     tar -xzf downloads/evaluations.tar.gz
+    #     tar -xzf downloads/reference_data.tar.gz
+
+    # - name: Check folder structure
+    #   working-directory: laura-baird-icse2026
+    #   run: |
+    #     echo "=== data/ ==="
+    #     ls -1 data/
+
+    #     echo "=== outputs/ ==="
+    #     ls -1 outputs/
+
+    # - name: Check HGAT model
+    #   working-directory: laura-baird-icse2026
+    #   run: |
+    #     ls outputs/models/
     
-    - name: Fix missing .json extensions
-      working-directory: laura-baird-icse2026
-      run: |
-        echo "Fixing file extensions..."
+    # - name: Fix missing .json extensions
+    #   working-directory: laura-baird-icse2026
+    #   run: |
+    #     echo "Fixing file extensions..."
 
-        find data/scanned_sboms -type f ! -name "*.json" | while read file; do
-          mv "$file" "$file.json"
-        done
+    #     find data/scanned_sboms -type f ! -name "*.json" | while read file; do
+    #       mv "$file" "$file.json"
+    #     done
 
-        echo "Done. Sample files:"
-        ls data/scanned_sboms | head -n 10
+    #     echo "Done. Sample files:"
+    #     ls data/scanned_sboms | head -n 10
 
-    - name: Train HGAT on enriched SBOM data
-      working-directory: laura-baird-icse2026
-      run: |
-        uv run python -m sbom_toolkit.ml.train_hgat \
-            --scan-dir data/scanned_sboms \
-            --epochs 30 \
-            --hidden-dim 64 \
-            --heads 2
+    # - name: Train HGAT on enriched SBOM data
+    #   working-directory: laura-baird-icse2026
+    #   run: |
+    #     uv run python -m sbom_toolkit.ml.train_hgat \
+    #         --scan-dir data/scanned_sboms \
+    #         --epochs 30 \
+    #         --hidden-dim 64 \
+    #         --heads 2
   
-    - name: Run HGAT prediction (correct SBOMs)
-      working-directory: laura-baird-icse2026
-      run: |
-        for f in $(ls data/scanned_sboms | head -n 10); do
-          echo "Processing $f"
-          uv run python -m sbom_toolkit.ml.hgat_predict \
-            data/scanned_sboms/$f \
-            --model outputs/models/hgat_best.pt
-        done
+    # - name: Run HGAT prediction (correct SBOMs)
+    #   working-directory: laura-baird-icse2026
+    #   run: |
+    #     for f in $(ls data/scanned_sboms | head -n 10); do
+    #       echo "Processing $f"
+    #       uv run python -m sbom_toolkit.ml.hgat_predict \
+    #         data/scanned_sboms/$f \
+    #         --model outputs/models/hgat_best.pt
+    #     done
 
-    - name: Train Cascade Predictor (MLP)
-      working-directory: laura-baird-icse2026
-      run: |
-        uv run python -m sbom_toolkit.ml.train_cascade_predictor \
-          --external-chains data/external_chains \
-          --incidents supply-chain-seeds/incidents.json \
-          --epochs 50
+    # - name: Train Cascade Predictor (MLP)
+    #   working-directory: laura-baird-icse2026
+    #   run: |
+    #     uv run python -m sbom_toolkit.ml.train_cascade_predictor \
+    #       --external-chains data/external_chains \
+    #       --incidents supply-chain-seeds/incidents.json \
+    #       --epochs 50
 
-    - name: Show output summary
-      working-directory: laura-baird-icse2026
-      run: |
-        echo "=== Outputs folder ==="
-        ls -R outputs | head -n 100
+    # - name: Show output summary
+    #   working-directory: laura-baird-icse2026
+    #   run: |
+    #     echo "=== Outputs folder ==="
+    #     ls -R outputs | head -n 100
 
-        echo "=== Models ==="
-        ls outputs/models/
+    #     echo "=== Models ==="
+    #     ls outputs/models/
 
-        echo "=== Evaluations ==="
-        ls outputs/evaluations/ || echo "No evaluations yet"
+    #     echo "=== Evaluations ==="
+    #     ls outputs/evaluations/ || echo "No evaluations yet"
 
-    - name: Upload outputs
-      uses: actions/upload-artifact@v4
-      with:
-        name: sbom-ml-outputs
-        path: laura-baird-icse2026/outputs/
+    # - name: Upload outputs
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #     name: sbom-ml-outputs
+    #     path: laura-baird-icse2026/outputs/
 
-    - name: Prepare ranking data
-      run: |
-        uv run python scripts/prepare_ranking_data.py
+    # - name: Prepare ranking data
+    #   run: |
+    #     uv run python scripts/prepare_ranking_data.py
 
-    - name: Train ranking model
-      run: |
-        uv run python scripts/train_ranking_model.py
+    # - name: Train ranking model
+    #   run: |
+    #     uv run python scripts/train_ranking_model.py
 
-    - name: Predict ranking
-      run: |
-        uv run python scripts/predict_ranking.py
+    # - name: Predict ranking
+    #   run: |
+    #     uv run python scripts/predict_ranking.py
 
-    - name: Upload outputs
-      uses: actions/upload-artifact@v4
-      with:
-        name: sbom-ml-outputs
-        path: |
-          laura-baird-icse2026/outputs/
+    # - name: Upload outputs
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #     name: sbom-ml-outputs
+    #     path: |
+    #       laura-baird-icse2026/outputs/
