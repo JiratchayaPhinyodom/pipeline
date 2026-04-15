@@ -35,9 +35,21 @@ jobs:
       working-directory: laura-baird-icse2026
       run: |
         uv sync
-    - name: Debug again
+
+
+    - name: FULL DEBUG
       run: |
-        ls -R | head -n 50
+        echo "=== CURRENT DIR ==="
+        pwd
+
+        echo "=== ROOT CONTENT ==="
+        ls -la
+
+        echo "=== SEARCH prepare_ranking_data.py ==="
+        find . -name "prepare_ranking_data.py"
+
+        echo "=== SEARCH predict_ranking.py ==="
+        find . -name "predict_ranking.py"
     # - name: Download dataset
     #   working-directory: laura-baird-icse2026
     #   run: |
