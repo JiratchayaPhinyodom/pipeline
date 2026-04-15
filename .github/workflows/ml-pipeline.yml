@@ -130,15 +130,15 @@ jobs:
 
     - name: Prepare ranking data
       run: |
-        uv run python pipeline/scripts/prepare_ranking_data.py
+        uv run python scripts/prepare_ranking_data.py
 
     - name: Train ranking model
       run: |
-        uv run python pipeline/scripts/train_ranking_model.py
+        uv run python scripts/train_ranking_model.py
 
     - name: Predict ranking
       run: |
-        uv run python pipeline/scripts/predict_ranking.py
+        uv run python scripts/predict_ranking.py
 
     - name: Upload outputs
       uses: actions/upload-artifact@v4
