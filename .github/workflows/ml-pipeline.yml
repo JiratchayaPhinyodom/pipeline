@@ -35,22 +35,9 @@ jobs:
       working-directory: laura-baird-icse2026
       run: |
         uv sync
-    - name: Debug repository structure
+    - name: Debug again
       run: |
-        echo "=== Current directory ==="
-        pwd
-
-        echo "=== Root files ==="
-        ls -la
-
-        echo "=== pipeline folder ==="
-        ls -la pipeline || echo "no pipeline folder"
-
-        echo "=== scripts folder ==="
-        ls -la scripts || echo "no scripts folder"
-
-        echo "=== pipeline/scripts folder ==="
-        ls -la pipeline/scripts || echo "no pipeline/scripts folder"
+        ls -R | head -n 50
     # - name: Download dataset
     #   working-directory: laura-baird-icse2026
     #   run: |
