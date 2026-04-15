@@ -83,23 +83,6 @@ jobs:
         echo "Done. Sample files:"
         ls data/scanned_sboms | head -n 10
 
-    - name: Debug HGAT conversion
-      working-directory: laura-baird-icse2026
-      run: |
-        uv run python - <<EOF
-        from pathlib import Path
-        from sbom_toolkit.ml.hetero_processing import sbom_to_hetero_data
-
-        path = Path("outputs/scans/00036e710ce76739c80cbc7a21bf7de78d602218_enriched.json")
-        data = sbom_to_hetero_data(path)
-
-        print("DATA:", data)
-        if data:
-            print("Component shape:", data["component"].x.shape)
-        else:
-            print("❌ Conversion failed")
-        EOF
-        
     - name: Train HGAT on enriched SBOM data
       working-directory: laura-baird-icse2026
       run: |
@@ -108,23 +91,16 @@ jobs:
             --epochs 30 \
             --hidden-dim 64 \
             --heads 2
-
-    - name: Debug HGAT conversion
-      working-directory: laura-baird-icse2026
-      run: |
-        uv run python - <<EOF
-        from pathlib import Path
-        from sbom_toolkit.ml.hetero_processing import sbom_to_hetero_data
-
-        path = Path("outputs/scans/00036e710ce76739c80cbc7a21bf7de78d602218_enriched.json")
-        data = sbom_to_hetero_data(path)
-
-        print("DATA:", data)
-        if data:
-            print("Component shape:", data["component"].x.shape)
-        else:
-            print("❌ Conversion failed")
-        EOF
+  
+    - name: Run HGAT prediction (correct SBOMs)
+    working-directory: laura-baird-icse2026
+    run: |
+      for f in $(ls data/scanned_sboms | head -n 10); do
+        echo "Processing $f"
+        uv run python -m sbom_toolkit.ml.hgat_predict \
+          data/scanned_sboms/$f \
+          --model outputs/models/hgat_best.pt
+      done
 
     - name: Train Cascade Predictor (MLP)
       working-directory: laura-baird-icse2026
