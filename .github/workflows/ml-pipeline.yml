@@ -81,7 +81,7 @@ jobs:
         done
 
         echo "Done. Sample files:"
-        ls data/scanned_sboms | head
+        ls data/scanned_sboms | head -n 10
 
     - name: Train HGAT on enriched SBOM data
       working-directory: laura-baird-icse2026
@@ -92,22 +92,10 @@ jobs:
             --hidden-dim 64 \
             --heads 2
 
-    - name: Evaluate on labeled SBOMs
+    - name: Run HGAT prediction (10 samples)
       working-directory: laura-baird-icse2026
       run: |
-        uv run python -m sbom_toolkit.ml.hgat_predict \
-          outputs/scans \
-          --model outputs/models/hgat_best.pt
-
-    - name: Run HGAT prediction (single file)
-      working-directory: laura-baird-icse2026
-      run: |
-        FILE=$(ls outputs/scans/*.json | head -n 1)
-        echo "Using file: $FILE"
-
-        uv run python -m sbom_toolkit.ml.hgat_predict \
-          "$FILE" \
-          --model outputs/models/hgat_best.pt
+        for f in $(ls outputs/scans | head -n 10); do echo "Processing $f"; uv run python -m sbom_toolkit.ml.hgat_predict outputs/scans/$f --model outputs/models/hgat_best.pt; done
 
     - name: Train Cascade Predictor (MLP)
       working-directory: laura-baird-icse2026
