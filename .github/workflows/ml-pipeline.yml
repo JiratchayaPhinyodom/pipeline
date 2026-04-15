@@ -127,3 +127,12 @@ jobs:
       with:
         name: sbom-ml-outputs
         path: laura-baird-icse2026/outputs/
+
+    - name: Rank attack chains
+      run: |
+        uv run python scripts/rank_attack_chains.py
+
+    - name: Show ranked attack chains
+      run: |
+        echo "=== Ranked Attack Chains ==="
+        cat laura-baird-icse2026/outputs/attack_chains_ranked.json | head -n 50
