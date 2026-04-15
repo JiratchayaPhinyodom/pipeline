@@ -99,14 +99,15 @@ jobs:
           outputs/scans \
           --model outputs/models/hgat_best.pt
 
-    - name: Run HGAT on multiple files
+    - name: Run HGAT prediction (single file)
       working-directory: laura-baird-icse2026
       run: |
-        for FILE in outputs/scans/*.json; do
-          echo "Processing $FILE"
-          uv run python -m sbom_toolkit.ml.hgat_predict "$FILE" \
-            --model outputs/models/hgat_best.pt || true
-        done
+        FILE=$(ls outputs/scans/*.json | head -n 1)
+        echo "Using file: $FILE"
+
+        uv run python -m sbom_toolkit.ml.hgat_predict \
+          "$FILE" \
+          --model outputs/models/hgat_best.pt
 
     - name: Train Cascade Predictor (MLP)
       working-directory: laura-baird-icse2026
