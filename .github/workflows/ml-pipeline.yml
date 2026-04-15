@@ -93,14 +93,14 @@ jobs:
             --heads 2
   
     - name: Run HGAT prediction (correct SBOMs)
-    working-directory: laura-baird-icse2026
-    run: |
-      for f in $(ls data/scanned_sboms | head -n 10); do
-        echo "Processing $f"
-        uv run python -m sbom_toolkit.ml.hgat_predict \
-          data/scanned_sboms/$f \
-          --model outputs/models/hgat_best.pt
-      done
+      working-directory: laura-baird-icse2026
+      run: |
+        for f in $(ls data/scanned_sboms | head -n 10); do
+          echo "Processing $f"
+          uv run python -m sbom_toolkit.ml.hgat_predict \
+            data/scanned_sboms/$f \
+            --model outputs/models/hgat_best.pt
+        done
 
     - name: Train Cascade Predictor (MLP)
       working-directory: laura-baird-icse2026
