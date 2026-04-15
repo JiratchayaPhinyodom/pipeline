@@ -129,19 +129,16 @@ jobs:
         path: laura-baird-icse2026/outputs/
 
     - name: Prepare ranking data
-      working-directory: pipeline
       run: |
-        uv run python prepare_ranking_data.py
+        uv run python pipeline/scripts/prepare_ranking_data.py
 
     - name: Train ranking model
-      working-directory: pipeline
       run: |
-        uv run python train_ranking_model.py
+        uv run python pipeline/scripts/train_ranking_model.py
 
     - name: Predict ranking
-      working-directory: pipeline
       run: |
-        uv run python predict_ranking.py
+        uv run python pipeline/scripts/predict_ranking.py
 
     - name: Upload outputs
       uses: actions/upload-artifact@v4
